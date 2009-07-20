@@ -1,7 +1,10 @@
 import twitter
 import simplejson
+from urllib2 import URLError, HTTPError
+import oath
 
 class Api(twitter.Api):
+	# TODO: Add oAuth in
 	def __init__(self, username=None, password=None, input_encoding=None, request_headers=None):
 		"""Instantiate a Twitter2 extended Api object
 		This inherits from Twitter.Api but provides extra Twitter API
@@ -14,12 +17,13 @@ class Api(twitter.Api):
 		"""
 		twitter.Api.__init__(self, username, password, input_encoding, request_headers)
 
+	# TODO: Change this to use named args instead of a multi-type single arg
 	def GetFollowersIds(self, userOrUsernameOrUserId, page=None):
 		"Get a list() of following user IDs"
 		username = None
 		if userOrUsernameOrUserId.__class__ == int:
 			id = userOrUsernameOrUserId
-		elif userOrUserId.__class__ == str:
+		elif userOrUsernameOrUserId.__class__ == str:
 			username = userOrUsernameOrUserId
 		else:
 			try:
@@ -33,11 +37,12 @@ class Api(twitter.Api):
 		parameters = {}
 		if page:
 	  		parameters['page'] = page
-		json = twitter.Api._FetchUrl(self, url, parameters=parameters)
+		json = self._FetchUrl(url, parameters=parameters)
 		data = simplejson.loads(json)
-		twitter.Api._CheckForTwitterError(self, data)
+		self._CheckForTwitterError(data)
 		return data
 
+	# TODO: Change this to use named args instead of a multi-type single arg
 	def GetFollowers(self, pageOrUsernameOrUserId=None, page=None):
 		"""Extended version of twitter.Api.GetFollowers
 		Doesn't require an authenticated User instance, as it will
@@ -54,7 +59,13 @@ class Api(twitter.Api):
 				a page of followers to display. [optional]
 		"""
 		if self._username:
-			twitter.Api.GetFollowers(self, pageOrUserOrUserId)
+			twitter.Api.GetFollowers(self, pageOrUsernameOrUserId)
 		else:
-			ids = self.GetFollowersIds(pageOrUserOrUserId, page)
-			return [twitter.Api.GetUser(id) for id in ids]
+			ids = self.GetFollowersIds(pageOrUsernameOrUserId, page)
+			users = []
+			for id in ids:
+				try:
+					users.append(self.GetUser(id))
+				except (HTTPError, URLError):
+					"skip"
+			return users
