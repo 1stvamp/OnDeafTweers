@@ -1,7 +1,6 @@
 import twitter
 import simplejson
 from urllib2 import URLError, HTTPError
-import oath
 
 class Api(twitter.Api):
 	# TODO: Add oAuth in
@@ -16,20 +15,16 @@ class Api(twitter.Api):
 			request_header: A dictionary of additional HTTP request headers. [optional]
 		"""
 		twitter.Api.__init__(self, username, password, input_encoding, request_headers)
+		self.oauth_handler = oath_handler
 
-	# TODO: Change this to use named args instead of a multi-type single arg
-	def GetFollowersIds(self, userOrUsernameOrUserId, page=None):
+	def GetFollowersIds(self, user_id=None, username=None, user=None, page=None):
 		"Get a list() of following user IDs"
-		username = None
-		if userOrUsernameOrUserId.__class__ == int:
-			id = userOrUsernameOrUserId
-		elif userOrUsernameOrUserId.__class__ == str:
-			username = userOrUsernameOrUserId
-		else:
-			try:
-				id = userOrUsernameOrUserId.id
-			except AttributeError:
-				raise Exception("First argument should be a User object or integer ID")
+		if user_id:
+			id = user_id
+		elif user:
+			id = user.id
+		else not username:
+			raise Exception("No Api.User, user ID or username provided")
 		if username:
 			url = 'http://twitter.com/followers/ids/%s.json' % username
 		else:
@@ -42,8 +37,7 @@ class Api(twitter.Api):
 		self._CheckForTwitterError(data)
 		return data
 
-	# TODO: Change this to use named args instead of a multi-type single arg
-	def GetFollowers(self, pageOrUsernameOrUserId=None, page=None):
+	def GetFollowers(self, page=None, username=None, user_id=None):
 		"""Extended version of twitter.Api.GetFollowers
 		Doesn't require an authenticated User instance, as it will
 		alternatively use GetFollowersIds() to retrieve a list of
@@ -61,7 +55,7 @@ class Api(twitter.Api):
 		if self._username:
 			twitter.Api.GetFollowers(self, pageOrUsernameOrUserId)
 		else:
-			ids = self.GetFollowersIds(pageOrUsernameOrUserId, page)
+			ids = self.GetFollowersIds(username=username, user_id=user_id, page=page)
 			users = []
 			for id in ids:
 				try:
