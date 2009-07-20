@@ -1,0 +1,3 @@
+include tweetbackweb/config/deployment.ini_tmpl
+recursive-include tweetbackweb/public *
+recursive-include tweetbackweb/templates *
