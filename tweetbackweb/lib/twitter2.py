@@ -14,15 +14,16 @@ class Api(twitter.Api):
 		"""
 		twitter.Api.__init__(self, username, password, input_encoding, request_headers)
 
-	def GetFollowersIds(self, userOrUserId, page=None):
+	def GetFollowersIds(self, userOrUsernameOrUserId, page=None):
+		"Get a list() of following user IDs"
 		username = None
-		if userOrUserId.__class__ == int:
-			id = userOrUserId
+		if userOrUsernameOrUserId.__class__ == int:
+			id = userOrUsernameOrUserId
 		elif userOrUserId.__class__ == str:
-			username = userOrUserId
+			username = userOrUsernameOrUserId
 		else:
 			try:
-				id = userOrUserId.id
+				id = userOrUsernameOrUserId.id
 			except AttributeError:
 				raise Exception("First argument should be a User object or integer ID")
 		if username:
@@ -37,11 +38,23 @@ class Api(twitter.Api):
 		twitter.Api._CheckForTwitterError(self, data)
 		return data
 
-# TODO: figure out how to instatiate User objects from IDs
-#
-#	def GetFollowers(self, pageOrUserOrUserId=None):
-#		if self._username:
-#			twitter.Api.GetFollowers(self, pageOrUserOrUserId)
-#		else:
-#			ids = self.GetFollowers(pageOrUserOrUserId)
-#			return [twitter.User(id) for id in ids]
+	def GetFollowers(self, pageOrUsernameOrUserId=None, page=None):
+		"""Extended version of twitter.Api.GetFollowers
+		Doesn't require an authenticated User instance, as it will
+		alternatively use GetFollowersIds() to retrieve a list of
+		user IDs and then instantiate a list() of User objects
+		by ID.
+		If a User has been authenticated, the parent method will
+		be called instead.
+		Args:
+			pageOrUserOrUserId: If a User is authenticated you can pass in
+				a page number, otherwise you need to pass in a username
+				or an ID.
+			page: If calling by username or ID, you can optionally provide
+				a page of followers to display. [optional]
+		"""
+		if self._username:
+			twitter.Api.GetFollowers(self, pageOrUserOrUserId)
+		else:
+			ids = self.GetFollowersIds(pageOrUserOrUserId, page)
+			return [twitter.Api.GetUser(id) for id in ids]
