@@ -64,3 +64,9 @@ class Api(twitter.Api):
 					"skip"
 			return users
 
+	def Search(self, query=None, phrase=None, until_date=None, since_date=None, language=None,
+			page=None, number_of_pages=None, since_id=None, location=None):
+		"""Search Twitter for tweets matching given terms
+		Args:
+		"""
+		return []
