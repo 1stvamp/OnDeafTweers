@@ -6,7 +6,7 @@ from pylons.controllers.util import abort, redirect_to
 
 from tweetbackweb.lib.base import BaseController, render
 
-from tweetback import tweetback
+from tweetback import Tweetback
 
 log = logging.getLogger(__name__)
 
