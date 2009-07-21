@@ -1,24 +1,7 @@
 import twitter
 import simplejson
 from urllib2 import URLError, HTTPError
-# Try to import the SimpleOAuthClient class, and define
-# as a generic handler variable
-try:
-	from SimpleOAuthClient import SimpleOAuthClient
-except ImportError:
-	oauth_client = None
-else:
-	oauth_client = SimpleOAuthClient
-# This is used to set Api.oauth_handler later on
 
-# First we need some oAuth values
-TWITTER_OAUTH_SERVER = ''
-TWITTER_OAUTH_PORT = ''
-TWITTER_OAUTH_REQUEST_TOKEN_URL = ''
-TWITTER_OAUTH_ACCESS_TOKEN_URL = ''
-TWITTER_OAUTH_AUTH_URL = ''
-TWITTER_OAUTH_CALLBACK_URL = ''
-TWITTER_OAUTH_RESOURCE_URL = ''
 
 class Api(twitter.Api):
 	# TODO: Add oAuth in
@@ -81,6 +64,3 @@ class Api(twitter.Api):
 					"skip"
 			return users
 
-# Make sure that if oauth_client module was found and imported
-# then we have it available statically from within Api()
-Api.oauth_client = oauth_client
