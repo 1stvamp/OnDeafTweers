@@ -1,3 +1,5 @@
 *.pyc
 build/*
 dist/*
+data/sessions/*
+data/templates/tweets/*
