@@ -20,13 +20,19 @@ class TweetsController(BaseController):
 
 	def user(self):
 		if session['twitter_user']:
-			report = self.tb.LookupFollowers(session['twitter_user'])
+			c.twitter_user = session['twitter_user']
+			c.report = self.tb.LookupFollowers(session['twitter_user'])
 			return render('/tweets/report_user.mako')
 		else:
 			return render('/tweets/new_user.mako')
 
 	def new_user(self, id):
-		session['twitter_user'] = self.tw.GetUser(id)
+		try:
+			session['twitter_user'] = self.tw.GetUser(id)
+		except HTTPError exception:
+			c.id = id
+			c.exception = exception
+			return render('/tweets/new_user_error.mako')
 		session.save()
 		redirect_to('/tweets/user')
 
