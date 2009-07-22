@@ -8,6 +8,7 @@ from tweetbackweb.lib.base import BaseController, render
 
 import twitter2
 from tweetback import Tweetback
+from urllib2 import URLError, HTTPError
 
 log = logging.getLogger(__name__)
 
