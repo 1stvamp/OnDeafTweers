@@ -4,6 +4,12 @@ you would include information such as the information below:
 Installation and Setup
 ======================
 
+Requirements
+    python-twitter:
+        easy_install python-twitter
+    oauth
+        easy_install oauth
+
 Install ``tweetbackweb`` using easy_install::
 
     easy_install tweetbackweb
