@@ -33,6 +33,7 @@ import twitter, simplejson, oauth
 from oauth import oauth
 from urllib2 import URLError, HTTPError
 
+
 # Taken from oauth implementation at: http://github.com/harperreed/twitteroauth-python/tree/master
 REQUEST_TOKEN_URL = 'https://twitter.com/oauth/request_token'
 ACCESS_TOKEN_URL = 'https://twitter.com/oauth/access_token'
@@ -60,15 +61,26 @@ class Api(twitter.Api):
 		self._access_token = access_token
 
 	def GetFollowersIds(self, user_id=None, username=None, user=None, page=None):
-		"Get a list() of following user IDs"
+		"""Retrieve a list() of user IDs for a User's followers.
+		Like GetFollowers() but only returns IDs, not full User
+		objects.
+		If user, username or user ID has been ommited, then the authenticated
+		(if present) user is used.
+		Args:
+		"""
 		if user_id:
 			id = user_id
+		elif username:
+			None
 		elif user:
 			id = user.id
-		elif not username:
+		elif self._username:
+			 id = self._username.id
+		else:
 			raise Exception("No Api.User, user ID or username provided")
+
 		if username:
-			url = 'http://twitter.com/followers/ids/%s.json' % username
+			url = 'http://twitter.com/followers/ids/%s.json' % id
 		else:
 			url = 'http://twitter.com/followers/ids.json?user_id=%i' % id
 		parameters = {}
@@ -85,26 +97,62 @@ class Api(twitter.Api):
 		alternatively use GetFollowersIds() to retrieve a list of
 		user IDs and then instantiate a list() of User objects
 		by ID.
-		If a User has been authenticated, the parent method will
-		be called instead.
+		If username or user ID has been ommited, then the authenticated
+		(if present) user is used.
 		Args:
-			pageOrUserOrUserId: If a User is authenticated you can pass in
-				a page number, otherwise you need to pass in a username
-				or an ID.
 			page: If calling by username or ID, you can optionally provide
 				a page of followers to display. [optional]
+			username:
+			user_id:
 		"""
-		if self._username:
-			twitter.Api.GetFollowers(self, pageOrUsernameOrUserId)
-		else:
+		if username or user_id:
 			ids = self.GetFollowersIds(username=username, user_id=user_id, page=page)
 			users = []
 			for id in ids:
 				try:
 					users.append(self.GetUser(id))
 				except (HTTPError, URLError):
-					"skip"
+					None
 			return users
+		elif self._username:
+			return twitter.Api.GetFollowers(self, page)
+		else:
+			raise Exception("GetFollowers() requires username or user_id or an authenticated User")
+
+	def GetFriendsIds(self, user=None, username=None, user_id=None, page=None):
+		"""Retrieve a list() of user IDs for a User's friends.
+		Like GetFriends() but only returns IDs, not full User
+		objects.
+		If user, username or user ID has been ommited, then the authenticated
+		(if present) user is used.
+		Args:
+			user:
+			username:
+			user_id:
+			page:
+		"""
+		if user_id:
+			id = user_id
+		elif username:
+			None
+		elif user:
+			id = user.id
+		elif self._username:
+			 id = self._username.id
+		else:
+			raise Exception("No Api.User, user ID or username provided")
+
+		if username:
+			url = 'http://twitter.com/friends/ids/%s.json' % username
+		else:
+			url = 'http://twitter.com/friends/ids.json?user_id=%i' % id
+		parameters = {}
+		if page:
+			parameters['page'] = page
+		json = self._FetchUrl(url, parameters=parameters)
+		data = simplejson.loads(json)
+		self._CheckForTwitterError(data)
+		return data
 
 	# oAuth methods
 	def _GetOpener(self):
