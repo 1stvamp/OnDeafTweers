@@ -11,7 +11,7 @@ class Tweetback(object):
 		"Instantiate a Tweetback object"
 		self.user = user
 
-	def LookupFollowers(self, user):
+	def LookupFollowers(self, user=None, username=None, user_id=None):
 		# TODO: lookup followers, lookup friends
 		# search for @ replies by followers who aren't
 		# friends, return dict() report

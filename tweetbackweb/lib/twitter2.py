@@ -56,7 +56,10 @@ class Api(twitter.Api):
 			twitter.Api.__init__(self, access_token.key, access_token.secret, input_encoding, request_headers)
 		else:
 			twitter.Api.__init__(self, username, password, input_encoding, request_headers)
-		self._Consumer = oauth.OAuthConsumer(consumer_key, consumer_secret)
+		if consumer_key or consumer_secret:
+			self._Consumer = oauth.OAuthConsumer(consumer_key, consumer_secret)
+		else:
+			self._Consumer = None
 		self._signature_method = oauth.OAuthSignatureMethod_HMAC_SHA1()
 		self._access_token = access_token
 
@@ -80,7 +83,7 @@ class Api(twitter.Api):
 			raise Exception("No Api.User, user ID or username provided")
 
 		if username:
-			url = 'http://twitter.com/followers/ids/%s.json' % id
+			url = 'http://twitter.com/followers/ids/%s.json' % username
 		else:
 			url = 'http://twitter.com/followers/ids.json?user_id=%i' % id
 		parameters = {}
@@ -155,13 +158,12 @@ class Api(twitter.Api):
 		return data
 
 	# oAuth methods
-	def _GetOpener(self):
-		opener = self._urllib.build_opener()
-		return opener
-
 	def _FetchUrl(self, url, post_data=None, parameters=None, no_cache=None):
-		'''Fetch a URL, optionally caching for a specified time.
-	
+		"""Fetch a URL, optionally caching for a specified time.
+		Overrides twitter.Api._FetchUrl() to switch between
+		non-oAuth authenticated requests and oAuth authenticated
+		requests.
+		
 		Args:
 		url: The URL to retrieve
 		post_data: 
@@ -173,7 +175,28 @@ class Api(twitter.Api):
 	
 		Returns:
 		A string containing the body of the response.
-		'''
+		"""
+		if self._Consumer:
+			return self._OAuthFetchUrl(self, url, post_data=post_data, parameters=parameters, no_cache=no_cache)
+		else:
+			return twitter.Api._FetchUrl(self, url, post_data=post_data, parameters=parameters, no_cache=no_cache)
+
+	def _OAuthFetchUrl(self, url, post_data=None, parameters=None, no_cache=None):
+		"""Fetch a URL, optionally caching for a specified time, using
+		oAuth for request authentication.
+			
+		Args:
+		url: The URL to retrieve
+		post_data: 
+			A dict of (str, unicode) key/value pairs.  If set, POST will be used.
+		parameters:
+			A dict whose key/value pairs should encoded and added 
+			to the query string. [OPTIONAL]
+		no_cache: If true, overrides the cache on the current request
+	
+		Returns:
+		A string containing the body of the response.
+		"""
 		# Build the extra parameters dict
 		extra_params = {}
 		if self._default_params:
@@ -190,7 +213,7 @@ class Api(twitter.Api):
 		else:
 			http_method = "GET"
 		
-		req = self._makeOAuthRequest(url, parameters=extra_params, http_method=http_method)
+		req = self._MakeOAuthRequest(url, parameters=extra_params, http_method=http_method)
 		self._signRequest(req, self._signature_method)
 		
 		# Get a url opener that can handle Oauth basic auth
@@ -235,76 +258,73 @@ class Api(twitter.Api):
 		# Always return the latest version
 		return url_data
 	
-	def _makeOAuthRequest(self, url, token=None, parameters=None, http_method="GET"):
-		'''Make a OAuth request from url and parameters
+	def _MakeOAuthRequest(self, url, token=None, parameters=None, http_method="GET"):
+		"""Make a OAuth request from url and parameters
 		
 		Args:
-		url: The Url to use for creating OAuth Request
-		parameters:
-			 The URL parameters
-		http_method:
-			 The HTTP method to use
+			url: The Url to use for creating OAuth Request
+			parameters: The URL parameters
+			http_method: The HTTP method to use
 		Returns:
 		A OAauthRequest object
-		'''
+		"""
 		if not token:
 			token = self._access_token
 		request = oauth.OAuthRequest.from_consumer_and_token(self._Consumer, token=token, http_url=url, parameters=parameters, http_method=http_method)
 		return request
 
 	def _signRequest(self, req, signature_method=oauth.OAuthSignatureMethod_HMAC_SHA1()):
-		'''Sign a request
+		"""Sign a request
 		
 		Reminder: Created this function so incase
 		if I need to add anything to request before signing
 		
 		Args:
-		req: The OAuth request created via _makeOAuthRequest
-		signate_method:
-			 The oauth signature method to use
-		'''
+			req: The oAuth request created via _MakeOAuthRequest
+			signate_method: The oAuth signature method to use
+		"""
 		req.sign_request(signature_method, self._Consumer, self._access_token)
 
-	def getAuthorizationURL(self, token, url=AUTHORIZATION_URL):
-		'''Create a signed authorization URL
+	def GetAuthorizationUrl(self, token, url=AUTHORIZATION_URL):
+		"""Create a signed authorization URL
 		
 		Returns:
-		A signed OAuthRequest authorization URL 
-		'''
-		req = self._makeOAuthRequest(url, token=token)
+			A signed OAuthRequest authorization URL 
+		"""
+		req = self._MakeOAuthRequest(url, token=token)
 		self._signRequest(req)
 		return req.to_url()
 
-	def getSigninURL(self, token, url=SIGNIN_URL):
-		'''Create a signed Sign-in URL
+	def GetSignInUrl(self, token, url=SIGNIN_URL):
+		"""Create a signed Sign-in URL
 		
 		Returns:
-		A signed OAuthRequest Sign-in URL 
-		'''
+			A signed OAuthRequest Sign-in URL 
+		"""
 		
-		signin_url = self.getAuthorizationURL(token, url)
+		signin_url = self.GetAuthorizationUrl(token, url)
 		return signin_url
 	
-	def getAccessToken(self, url=ACCESS_TOKEN_URL):
+	def GetAccessToken(self, url=ACCESS_TOKEN_URL):
 		token = self._FetchUrl(url, no_cache=True)
 		return oauth.OAuthToken.from_string(token) 
 
-	def getRequestToken(self, url=REQUEST_TOKEN_URL):
-		'''Get a Request Token from Twitter
+	def GetRequestToken(self, url=REQUEST_TOKEN_URL):
+		"""Get a Request Token from Twitter
 		
 		Returns:
-		A OAuthToken object containing a request token
-		'''
+			A OAuthToken object containing a request token
+		"""
 		resp = self._FetchUrl(url, no_cache=True)
 		token = oauth.OAuthToken.from_string(resp)
 		return token
 	
 	def GetUserInfo(self, url='https://twitter.com/account/verify_credentials.json'):
-		'''Get user information from twitter
+		"""Get user information from twitter
 		
 		Returns:
-		Returns the twitter.User object
-		'''
+			Returns the twitter.User object
+		"""
 		json = self._FetchUrl(url)
 		data = simplejson.loads(json)
 		self._CheckForTwitterError(data)
@@ -321,3 +341,12 @@ class ApiSearch(Api):
 		Args:
 		"""
 		return []
+
+class User(twitter.User):
+	def __init__(self, id=None, name=None, screen_name=None, location=None, description=None, profile_image_url=None, profile_background_tile=None, profile_background_image_url=None, profile_sidebar_fill_color=None, profile_background_color=None, profile_link_color=None, profile_text_color=None, protected=None, utc_offset=None, time_zone=None, followers_count=None, friends_count=None, statuses_count=None, favourites_count=None, url=None, status=None):
+		"""twitter2 wrapper around twitter.User, allowing you to
+		call User methods and the User class from a single module
+		(twitter2) rather than having to import python-twitter as
+		well.
+		"""
+		twitter.User.__init__(self, id=id, name=name, screen_name=screen_name, location=location, description=description, profile_image_url=profile_image_url, profile_background_tile=profile_background_tile, profile_background_image_url=profile_background_image_url, profile_sidebar_fill_color=profile_sidebar_fill_color, profile_background_color=profile_background_color, profile_link_color=profile_link_color, profile_text_color=profile_text_color, protected=protected, utc_offset=utc_offset, time_zone=time_zone, followers_count=followers_count, friends_count=friends_count, statuses_count=statuses_count, favourites_count=favourites_count, url=url, status=status);
