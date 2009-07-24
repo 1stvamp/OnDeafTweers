@@ -4,3 +4,4 @@ dist/*
 data/sessions/*
 data/templates/tweets/*
 development.ini
+Paste*
