@@ -30,7 +30,7 @@ class TweetsController(BaseController):
 	def new_user(self, id):
 		try:
 			session['twitter_user'] = self.tw.GetUser(id)
-		except HTTPError exception:
+		except HTTPError as exception:
 			c.id = id
 			c.exception = exception
 			return render('/tweets/new_user_error.mako')
