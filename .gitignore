@@ -3,3 +3,4 @@ build/*
 dist/*
 data/sessions/*
 data/templates/tweets/*
+development.ini
