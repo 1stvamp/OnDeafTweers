@@ -1,14 +1,14 @@
 #!/usr/bin/python
 import twitter2
 
-class Tweetback(object):
-	"""Tweetback
+class OnDeafTweers(object):
+	"""OnDeafTweers
 	Class for comparing twitter followers and following
 	to see who you're not following who you have had conversations
 	with or have just @-replied you.
 	"""
 	def __init__(self, user=None):
-		"Instantiate a Tweetback object"
+		"Instantiate a OnDeafTweers object"
 		self.user = user
 
 	def LookupFollowers(self, user=None, username=None, user_id=None):
@@ -18,7 +18,7 @@ class Tweetback(object):
 		return None
 
 def main():
-	tb = Tweetback()
+	tb = OnDeafTweers()
 	print "tweetback loaded"
 	return
 

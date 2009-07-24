@@ -7,10 +7,10 @@ from pylons import config
 from pylons.error import handle_mako_error
 from sqlalchemy import engine_from_config
 
-import tweetbackweb.lib.app_globals as app_globals
-import tweetbackweb.lib.helpers
-from tweetbackweb.config.routing import make_map
-from tweetbackweb.model import init_model
+import OnDeafTweers_web.lib.app_globals as app_globals
+import OnDeafTweers_web.lib.helpers
+from OnDeafTweers_web.config.routing import make_map
+from OnDeafTweers_web.model import init_model
 
 def load_environment(global_conf, app_conf):
     """Configure the Pylons environment via the ``pylons.config``
@@ -24,11 +24,11 @@ def load_environment(global_conf, app_conf):
                  templates=[os.path.join(root, 'templates')])
 
     # Initialize config with the basic options
-    config.init_app(global_conf, app_conf, package='tweetbackweb', paths=paths)
+    config.init_app(global_conf, app_conf, package='OnDeafTweers_web', paths=paths)
 
     config['routes.map'] = make_map()
     config['pylons.app_globals'] = app_globals.Globals()
-    config['pylons.h'] = tweetbackweb.lib.helpers
+    config['pylons.h'] = OnDeafTweers_web.lib.helpers
 
     # Create the Mako TemplateLookup, with the default auto-escaping
     config['pylons.app_globals'].mako_lookup = TemplateLookup(

@@ -1,4 +1,4 @@
-This file is for you to describe the tweetbackweb application. Typically
+This file is for you to describe the OnDeafTweers_web application. Typically
 you would include information such as the information below:
 
 Installation and Setup
@@ -10,13 +10,13 @@ Requirements
     oauth
         easy_install oauth
 
-Install ``tweetbackweb`` using easy_install::
+Install ``OnDeafTweers_web`` using easy_install::
 
-    easy_install tweetbackweb
+    easy_install OnDeafTweers_web
 
 Make a config file as follows::
 
-    paster make-config tweetbackweb config.ini
+    paster make-config OnDeafTweers_web config.ini
 
 Tweak the config file as appropriate and then setup the application::
 

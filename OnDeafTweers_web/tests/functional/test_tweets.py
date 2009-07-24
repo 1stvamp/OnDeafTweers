@@ -1,4 +1,4 @@
-from tweetbackweb.tests import *
+from OnDeafTweers_web.tests import *
 
 class TestTweetsController(TestController):
 

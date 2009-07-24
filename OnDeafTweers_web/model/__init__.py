@@ -2,7 +2,7 @@
 import sqlalchemy as sa
 from sqlalchemy import orm
 
-from tweetbackweb.model import meta
+from OnDeafTweers_web.model import meta
 
 def init_model(engine):
     """Call me before using any of the tables or classes in the model"""

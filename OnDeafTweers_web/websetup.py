@@ -1,13 +1,13 @@
-"""Setup the tweetbackweb application"""
+"""Setup the OnDeafTweers_web application"""
 import logging
 
-from tweetbackweb.config.environment import load_environment
-from tweetbackweb.model import meta
+from OnDeafTweers_web.config.environment import load_environment
+from OnDeafTweers_web.model import meta
 
 log = logging.getLogger(__name__)
 
 def setup_app(command, conf, vars):
-    """Place any commands to setup tweetbackweb here"""
+    """Place any commands to setup OnDeafTweers_web here"""
     load_environment(conf.global_conf, conf.local_conf)
 
     # Create the tables if they don't already exist

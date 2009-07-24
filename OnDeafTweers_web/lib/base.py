@@ -5,7 +5,7 @@ Provides the BaseController class for subclassing.
 from pylons.controllers import WSGIController
 from pylons.templating import render_mako as render
 
-from tweetbackweb.model import meta
+from OnDeafTweers_web.model import meta
 
 class BaseController(WSGIController):
 
