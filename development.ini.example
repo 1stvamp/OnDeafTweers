@@ -81,3 +81,9 @@ formatter = generic
 [formatter_generic]
 format = %(asctime)s,%(msecs)03d %(levelname)-5.5s [%(name)s] %(message)s
 datefmt = %H:%M:%S
+
+[twitter]
+twitter.login.username = 
+twitter.login.password = 
+twitter.oauth.consumer_key = 
+twitter.oauth.consumer_secret = 
