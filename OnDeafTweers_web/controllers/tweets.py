@@ -7,7 +7,7 @@ from pylons.controllers.util import abort, redirect_to
 from OnDeafTweers_web.lib.base import BaseController, render
 
 import twitter2
-from tweetback import Tweetback
+from OnDeafTweers import OnDeafTweers
 from urllib2 import URLError, HTTPError
 
 log = logging.getLogger(__name__)
@@ -15,14 +15,14 @@ log = logging.getLogger(__name__)
 class TweetsController(BaseController):
 	def __before__(self):
 		# Make sure we have a Tweetback instance
-		self.tb = Tweetback()
+		self.odt = OnDeafTweers()
 		# And a twitter2.Api instance for users
 		self.tw = twitter2.Api()
 
 	def user(self):
 		if session['twitter_user']:
 			c.twitter_user = session['twitter_user']
-			c.report = self.tb.LookupFollowers(session['twitter_user'])
+			c.report = self.odt.LookupFollowers(session['twitter_user'])
 			return render('/tweets/report_user.mako')
 		else:
 			return render('/tweets/new_user.mako')
