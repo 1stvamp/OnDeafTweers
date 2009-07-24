@@ -14,10 +14,11 @@ log = logging.getLogger(__name__)
 
 class TweetsController(BaseController):
 	def __before__(self):
-		# Make sure we have a Tweetback instance
-		self.odt = OnDeafTweers()
-		# And a twitter2.Api instance for users
+		# twitter2.Api instance for users
 		self.tw = twitter2.Api()
+		# Make sure we have a Tweetback instance
+		# also pass in the API instance for reuse
+		self.odt = OnDeafTweers(self.tw)
 
 	def user(self):
 		if session['twitter_user']:
