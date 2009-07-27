@@ -336,10 +336,50 @@ class SearchApi(Api):
 		Api(self)
 
 	def Search(self, query=None, phrase=None, until_date=None, since_date=None, language=None,
-			page=None, number_of_pages=None, since_id=None, location=None):
+			page=None, number_of_pages=15, since_id=None, to_user=None, from_user=None,
+			referencing_user=None, tag=None, and_query=None, or_query=None, not_query=None,
+			within=None, near=None, location_units="mi"):
 		"""Search Twitter for tweets matching given terms
 		Args:
 		"""
+		# Make sure that at least one optional arg was passed
+		args = [element for element in locals() if element]
+		if not args:
+			raise Exception("Search() requires at least one arg")
+		url = "http://search.twitter.com/search.json"
+		parameters = {}
+		if page:
+			parameters['page'] = page
+		if query:
+			parameters['q'] = query
+		if phrase:
+			parameters['phrase'] = phrase
+		if until_date:
+			parameters['until'] = until_date
+		if since_date:
+			parameters['since'] = since_date
+		if language:
+			parameters['lang'] = language
+		if number_of_pages:
+			parameters['rpp'] = number_of_pages
+		if since_id:
+			parameters['since_id'] = since_id
+		if to_user:
+			parameters['to'] = to_user
+		if from_user:
+			parameters['from'] = from_user
+		if referencing_user:
+			parameters['ref'] = referencing_user
+		if tag:
+			parameters['tag'] = tag
+		if and_query:
+			parameters['ands'] = and_query
+		if or_query:
+			parameters['ors'] = or_query
+
+		json = self._FetchUrl(url, parameters=parameters)
+		data = simplejson.loads(json)
+		self._CheckForTwitterError(data)
 		return []
 
 class User(twitter.User):

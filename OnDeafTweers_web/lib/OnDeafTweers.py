@@ -49,16 +49,19 @@ class OnDeafTweers(object):
 					for status in statuses:
 						if at_username in status:
 							if not report["followers"][user.GetScreenname()]:
+								# Make sure the sub-dict is instantiated
 								report["followers"][user.GetScreenname()] = {}
 							report["followers"][user.GetScreenname()]["mentioned"] += 1
 							if "RT" in status:
 								report["followers"][user.GetScreenname]["retweets"] += 1
 			else:
 				# Do search here
-				query = "@%s" % user.GetScreenname()
+				to_tweets = self.searchApi.Search()
+				ref_tweets = self.searchApi.Search()
 		return None
 
 def main():
+	# TODO: CLI
 	tb = OnDeafTweers()
 	print "ODT loaded"
 	return
