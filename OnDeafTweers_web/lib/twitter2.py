@@ -331,7 +331,7 @@ class Api(twitter.Api):
 		return User.NewFromJsonDict(data)
 
 
-class ApiSearch(Api):
+class SearchApi(Api):
 	def __init__(self):
 		Api(self)
 
