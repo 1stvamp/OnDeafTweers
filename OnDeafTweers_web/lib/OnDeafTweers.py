@@ -28,6 +28,8 @@ class OnDeafTweers(object):
 		elif user_id:
 			user = self.api.GetUser(id=user_id)
 
+		report = {}
+		at_username = "@%s" % user.GetScreenname()
 		friendsIds = self.api.GetFriendsIds(user=user, username=username, user_id=user_id)
 		followersIds = self.api.GetFollowersIds(user=user, username=username, user_id=user_id)
 		# Get the difference between the 2, using sets
@@ -36,8 +38,24 @@ class OnDeafTweers(object):
 		# Treat each as a User
 		users = (self.api.GetUser(id=id) for id in ids)
 		for user in users:
-			# Do search here
-			query = "@%s" % user.name
+			# If the user has very few statuses, we may as well
+			# try to query them instead
+			if user.GetStatusesCount() <= 5:
+				try:
+					statuses = user.GetStatuses()
+				except Exception:
+					None
+				else:
+					for status in statuses:
+						if at_username in status:
+							if not report["followers"][user.GetScreenname()]:
+								report["followers"][user.GetScreenname()] = {}
+							report["followers"][user.GetScreenname()]["mentioned"] += 1
+							if "RT" in status:
+								report["followers"][user.GetScreenname]["retweets"] += 1
+			else:
+				# Do search here
+				query = "@%s" % user.GetScreenname()
 		return None
 
 def main():
