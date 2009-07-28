@@ -333,7 +333,7 @@ class Api(twitter.Api):
 
 class SearchApi(Api):
 	def __init__(self):
-		Api(self)
+		Api.__init__(self)
 
 	def Search(self, query=None, phrase=None, until_date=None, since_date=None, language=None,
 			page=None, number_of_pages=15, since_id=None, to_user=None, from_user=None,
