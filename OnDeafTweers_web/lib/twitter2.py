@@ -376,11 +376,19 @@ class SearchApi(Api):
 			parameters['ands'] = and_query
 		if or_query:
 			parameters['ors'] = or_query
+		if not_query:
+			parameters['nots'] = not_query
+		if within:
+			parameters['within'] = within
+		if near:
+			parameters['near'] = near
+		if location_units:
+			parameters['units'] = location_units
 
 		json = self._FetchUrl(url, parameters=parameters)
 		data = simplejson.loads(json)
 		self._CheckForTwitterError(data)
-		return []
+		return data
 
 class User(twitter.User):
 	def __init__(self, id=None, name=None, screen_name=None, location=None, description=None, profile_image_url=None, profile_background_tile=None, profile_background_image_url=None, profile_sidebar_fill_color=None, profile_background_color=None, profile_link_color=None, profile_text_color=None, protected=None, utc_offset=None, time_zone=None, followers_count=None, friends_count=None, statuses_count=None, favourites_count=None, url=None, status=None):
