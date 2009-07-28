@@ -336,8 +336,8 @@ class SearchApi(Api):
 		Api.__init__(self)
 
 	def Search(self, query=None, phrase=None, until_date=None, since_date=None, language=None,
-			page=None, number_of_pages=15, since_id=None, to_user=None, from_user=None,
-			referencing_user=None, tag=None, and_query=None, or_query=None, not_query=None,
+			page=None, per_page=15, since_id=None, to_username=None, from_username=None,
+			referencing_username=None, tag=None, and_query=None, or_query=None, not_query=None,
 			within=None, near=None, location_units="mi"):
 		"""Search Twitter for tweets matching given terms
 		Args:
@@ -360,16 +360,16 @@ class SearchApi(Api):
 			parameters['since'] = since_date
 		if language:
 			parameters['lang'] = language
-		if number_of_pages:
-			parameters['rpp'] = number_of_pages
+		if per_page:
+			parameters['rpp'] = per_page
 		if since_id:
 			parameters['since_id'] = since_id
-		if to_user:
-			parameters['to'] = to_user
-		if from_user:
-			parameters['from'] = from_user
-		if referencing_user:
-			parameters['ref'] = referencing_user
+		if to_username:
+			parameters['to'] = to_username
+		if from_username:
+			parameters['from'] = from_username
+		if referencing_username:
+			parameters['ref'] = referencing_username
 		if tag:
 			parameters['tag'] = tag
 		if and_query:

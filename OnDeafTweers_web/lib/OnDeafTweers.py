@@ -36,28 +36,28 @@ class OnDeafTweers(object):
 		# This gives us all followers that aren't also friends
 		ids = set(followersIds).difference(set(friendsIds))
 		# Treat each as a User
-		users = (self.api.GetUser(id=id) for id in ids)
-		for user in users:
+		followers = (self.api.GetUser(id=id) for id in ids)
+		for follower in followers:
 			# If the user has very few statuses, we may as well
 			# try to query them instead
-			if user.GetStatusesCount() <= 5:
+			if follower.GetStatusesCount() <= 5:
 				try:
-					statuses = user.GetStatuses()
+					statuses = follower.GetStatuses()
 				except Exception:
 					None
 				else:
 					for status in statuses:
 						if at_username in status:
-							if not report["followers"][user.GetScreenname()]:
+							if not report["followers"][follower.GetScreenname()]:
 								# Make sure the sub-dict is instantiated
-								report["followers"][user.GetScreenname()] = {}
-							report["followers"][user.GetScreenname()]["mentioned"] += 1
+								report["followers"][follower.GetScreenname()] = {}
+							report["followers"][follower.GetScreenname()]["mentioned"] += 1
 							if "RT" in status:
-								report["followers"][user.GetScreenname]["retweets"] += 1
+								report["followers"][follower.GetScreenname]["retweets"] += 1
 			else:
 				# Do search here
-				to_tweets = self.searchApi.Search()
-				ref_tweets = self.searchApi.Search()
+				to_tweets = self.searchApi.Search(to_username=user.GetScreenname(), from_username=follower.GetScreenname(), per_page=20)
+				ref_tweets = self.searchApi.Search(referencing_username=user.GetScreenname(), from_username=follower.GetScreenname(), per_page=20)
 		return None
 
 def main():
