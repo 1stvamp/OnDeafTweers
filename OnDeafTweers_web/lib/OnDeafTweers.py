@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import twitter2
+from urllib2 import URLError, HTTPError
 
 class OnDeafTweers(object):
 	"""OnDeafTweers
@@ -26,52 +27,57 @@ class OnDeafTweers(object):
 		# search for @ replies by followers who aren't
 		# friends, return dict() report
 		if username:
-			user = self.api.GetUser(username=username)
+			user = self.api.GetUser(username)
 		elif user_id:
-			user = self.api.GetUser(id=user_id)
+			user = self.api.GetUser(user_id)
 
 		report = {}
 		report["followers"] = {}
-		at_username = "@%s" % user.GetScreenname()
+		at_username = "@%s" % user.GetScreenName()
 		friendsIds = self.api.GetFriendsIds(user=user, username=username, user_id=user_id)
 		followersIds = self.api.GetFollowersIds(user=user, username=username, user_id=user_id)
 		# Get the difference between the 2, using sets
 		# This gives us all followers that aren't also friends
 		ids = set(followersIds).difference(set(friendsIds))
 		# Treat each as a User
-		followers = (self.api.GetUser(id=id) for id in ids)
-		for follower in followers:
-			if follower.GetScreenname() not in report["followers"]:
-				# Make sure the sub-dict is instantiated
-				report["followers"][follower.GetScreenname()] = {}
-			# If the user has very few statuses, we may as well
-			# try to query them instead
-			if follower.GetStatusesCount() <= 5:
-				try:
-					statuses = follower.GetStatuses()
-				except Exception:
-					None
-				else:
-					for status in statuses:
-						# TODO: add to_tweets equiv here
-						if at_username in status:
-							report["followers"][follower.GetScreenname()]["mentioned"] += 1
+		for id in ids:
+			try:
+				follower = self.api.GetUser(id)
+			except HTTPError:
+				# Just skip any error in retrieving the user
+				None
 			else:
-				# Do search here
-				to_tweets = self.searchApi.Search(to_username=user.GetScreenname(), from_username=follower.GetScreenname(), per_page=20)
-				if 'next_url' in to_tweets:
-					report["followers"][follower.GetScreenname()]["to"] = self.ABOVE_MAX
+				if follower.GetScreenName() not in report["followers"]:
+					# Make sure the sub-dict is instantiated
+					report["followers"][follower.GetScreenName()] = {}
+				# If the user has very few statuses, we may as well
+				# try to query them instead
+				if follower.GetStatusesCount() <= 5:
+					try:
+						statuses = follower.GetStatuses()
+					except Exception:
+						None
+					else:
+						for status in statuses:
+							# TODO: add to_tweets equiv here
+							if at_username in status:
+								report["followers"][follower.GetScreenName()]["mentioned"] += 1
 				else:
-					report["followers"][follower.GetScreenname()]["to"] = len(to_weets['results'])
-				report["followers"][follower.GetScreenname()]["to_query"] = to_tweets['query']
+					# Do search here
+					to_tweets = self.searchApi.Search(to_username=user.GetScreenName(), from_username=follower.GetScreenName(), per_page=20)
+					if 'next_url' in to_tweets:
+						report["followers"][follower.GetScreenName()]["to"] = self.ABOVE_MAX
+					else:
+						report["followers"][follower.GetScreenName()]["to"] = len(to_tweets['results'])
+					report["followers"][follower.GetScreenName()]["to_query"] = to_tweets['query']
 
-				ref_tweets = self.searchApi.Search(referencing_username=user.GetScreenname(), from_username=follower.GetScreenname(), per_page=20)
-				if 'next_url' in ref_tweets:
-					report["followers"][follower.GetScreenname()]["mentioned"] = self.ABOVE_MAX
-				else:
-					report["followers"][follower.GetScreenname()]["mentioned"] = len(ref_weets['results'])
-				report["followers"][follower.GetScreenname()]["mentioned_query"] = ref_tweets['query']
-		return None
+					ref_tweets = self.searchApi.Search(referencing_username=user.GetScreenName(), from_username=follower.GetScreenName(), per_page=20)
+					if 'next_url' in ref_tweets:
+						report["followers"][follower.GetScreenName()]["mentioned"] = self.ABOVE_MAX
+					else:
+						report["followers"][follower.GetScreenName()]["mentioned"] = len(ref_tweets['results'])
+					report["followers"][follower.GetScreenName()]["mentioned_query"] = ref_tweets['query']
+		return report
 
 def main():
 	# TODO: CLI
