@@ -7,6 +7,8 @@ class OnDeafTweers(object):
 	to see who you're not following who you have had conversations
 	with or have just @-replied you.
 	"""
+	"Constant for anything about the max freshhold"
+	ABOVE_MAX = "20+"
 	def __init__(self, api=None, searchApi=None):
 		"Instantiate a OnDeafTweers object"
 		if not api:
@@ -18,8 +20,6 @@ class OnDeafTweers(object):
 			self.searchApi = twitter2.SearchApi()
 		else:
 			self.searchApi = searchApi
-		# Setup a nice constant for anything about the max freshhold
-		self.ABOVE_MAX = "20+"
 
 	def LookupFollowers(self, user=None, username=None, user_id=None):
 		# TODO: lookup followers, lookup friends
