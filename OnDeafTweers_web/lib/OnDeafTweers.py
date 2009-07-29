@@ -18,6 +18,8 @@ class OnDeafTweers(object):
 			self.searchApi = twitter2.SearchApi()
 		else:
 			self.searchApi = searchApi
+		# Setup a nice constant for anything about the max freshhold
+		self.ABOVE_MAX = "20+"
 
 	def LookupFollowers(self, user=None, username=None, user_id=None):
 		# TODO: lookup followers, lookup friends
@@ -58,14 +60,14 @@ class OnDeafTweers(object):
 				# Do search here
 				to_tweets = self.searchApi.Search(to_username=user.GetScreenname(), from_username=follower.GetScreenname(), per_page=20)
 				if 'next_url' in to_tweets:
-					report["followers"][follower.GetScreenname()]["to"] = "20+"
+					report["followers"][follower.GetScreenname()]["to"] = self.ABOVE_MAX
 				else:
 					report["followers"][follower.GetScreenname()]["to"] = len(to_weets['results'])
 				report["followers"][follower.GetScreenname()]["to_query"] = to_tweets['query']
 
 				ref_tweets = self.searchApi.Search(referencing_username=user.GetScreenname(), from_username=follower.GetScreenname(), per_page=20)
 				if 'next_url' in ref_tweets:
-					report["followers"][follower.GetScreenname()]["mentioned"] = "20+"
+					report["followers"][follower.GetScreenname()]["mentioned"] = self.ABOVE_MAX
 				else:
 					report["followers"][follower.GetScreenname()]["mentioned"] = len(ref_weets['results'])
 				report["followers"][follower.GetScreenname()]["mentioned_query"] = ref_tweets['query']
