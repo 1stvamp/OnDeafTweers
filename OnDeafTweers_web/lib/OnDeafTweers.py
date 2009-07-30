@@ -32,7 +32,6 @@ class OnDeafTweers(object):
 			user = self.api.GetUser(user_id)
 
 		report = {}
-		report["followers"] = {}
 		at_username = "@%s" % user.GetScreenName()
 		friendsIds = self.api.GetFriendsIds(user=user, username=username, user_id=user_id)
 		followersIds = self.api.GetFollowersIds(user=user, username=username, user_id=user_id)
@@ -41,15 +40,13 @@ class OnDeafTweers(object):
 		ids = set(followersIds).difference(set(friendsIds))
 		# Treat each as a User
 		for id in ids:
+			reportRow = {}
 			try:
 				follower = self.api.GetUser(id)
 			except HTTPError:
 				# Just skip any error in retrieving the user
 				None
 			else:
-				if follower.GetScreenName() not in report["followers"]:
-					# Make sure the sub-dict is instantiated
-					report["followers"][follower.GetScreenName()] = {}
 				# If the user has very few statuses, we may as well
 				# try to query them instead
 				if follower.GetStatusesCount() <= 5:
@@ -61,22 +58,25 @@ class OnDeafTweers(object):
 						for status in statuses:
 							# TODO: add to_tweets equiv here
 							if at_username in status:
-								report["followers"][follower.GetScreenName()]["mentioned"] += 1
+								reportRow["mentioned"] += 1
 				else:
 					# Do search here
 					to_tweets = self.searchApi.Search(to_username=user.GetScreenName(), from_username=follower.GetScreenName(), per_page=20)
 					if 'next_url' in to_tweets:
-						report["followers"][follower.GetScreenName()]["to"] = self.ABOVE_MAX
+						reportRow["to"] = self.ABOVE_MAX
 					else:
-						report["followers"][follower.GetScreenName()]["to"] = len(to_tweets['results'])
-					report["followers"][follower.GetScreenName()]["to_query"] = to_tweets['query']
+						reportRow["to"] = len(to_tweets['results'])
+					reportRow["to_query"] = to_tweets['query']
 
 					ref_tweets = self.searchApi.Search(referencing_username=user.GetScreenName(), from_username=follower.GetScreenName(), per_page=20)
 					if 'next_url' in ref_tweets:
-						report["followers"][follower.GetScreenName()]["mentioned"] = self.ABOVE_MAX
+						reportRow["mentioned"] = self.ABOVE_MAX
 					else:
-						report["followers"][follower.GetScreenName()]["mentioned"] = len(ref_tweets['results'])
-					report["followers"][follower.GetScreenName()]["mentioned_query"] = ref_tweets['query']
+						reportRow["mentioned"] = len(ref_tweets['results'])
+					reportRow["mentioned_query"] = ref_tweets['query']
+
+				if reportRow.get("to") > 0 or reportRow.get("mentioned") > 0:
+					report[follower.GetScreenName()] = reportRow
 		return report
 
 def main():

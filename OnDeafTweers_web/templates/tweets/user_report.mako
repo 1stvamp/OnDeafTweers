@@ -1,2 +1,2 @@
-% for key, value in c.report["followers"].iteritems():
+% for key, value in c.report.iteritems():
 	${key} = ${value}
