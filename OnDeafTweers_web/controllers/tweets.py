@@ -23,8 +23,8 @@ class TweetsController(BaseController):
 	def user(self):
 		if session['twitter_user']:
 			c.twitter_user = session['twitter_user']
-			c.report = self.odt.LookupFollowers(session['twitter_user'])
-			return render('/tweets/report_user.mako')
+			c.report = self.odt.LookupFollowers(user=session['twitter_user'])
+			return render('/tweets/user_report.mako')
 		else:
 			return render('/tweets/new_user.mako')
 
