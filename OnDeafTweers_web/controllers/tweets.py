@@ -20,21 +20,17 @@ class TweetsController(BaseController):
 		# also pass in the API instance for reuse
 		self.odt = OnDeafTweers(self.tw)
 
-	def user(self):
-		if session['twitter_user']:
-			c.twitter_user = session['twitter_user']
-			c.report = self.odt.LookupFollowers(user=session['twitter_user'])
-			return render('/tweets/user_report.mako')
-		else:
-			return render('/tweets/new_user.mako')
-
-	def new_user(self, id):
+	def user(self, id):
 		try:
 			session['twitter_user'] = self.tw.GetUser(id)
 		except HTTPError as exception:
 			c.id = id
 			c.exception = exception
 			return render('/tweets/new_user_error.mako')
-		session.save()
-		redirect_to('/tweets/user')
+		else:
+			session.save()
+
+		c.twitter_user = session['twitter_user']
+		c.report = self.odt.LookupFollowers(user=session['twitter_user'])
+		return render('/tweets/user_report.mako')
 
