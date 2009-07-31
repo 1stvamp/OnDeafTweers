@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import twitter2
+import re
 from urllib2 import URLError, HTTPError
 
 class OnDeafTweers(object):
@@ -33,6 +34,7 @@ class OnDeafTweers(object):
 
 		report = {}
 		at_username = "@%s" % user.GetScreenName()
+		at_username_regex = re.compile(r"$%s" % at_username)
 		friendsIds = self.api.GetFriendsIds(user=user, username=username, user_id=user_id)
 		followersIds = self.api.GetFollowersIds(user=user, username=username, user_id=user_id)
 		# Get the difference between the 2, using sets
@@ -56,26 +58,27 @@ class OnDeafTweers(object):
 						None
 					else:
 						for status in statuses:
-							# TODO: add to_tweets equiv here
-							if at_username in status:
-								reportRow["mentioned"] += 1
+							if at_username_regex.match(status):
+								reportRow['to'] += 1
+							elif at_username in status:
+								reportRow['mentioned'] += 1
 				else:
 					# Do search here
 					to_tweets = self.searchApi.Search(to_username=user.GetScreenName(), from_username=follower.GetScreenName(), per_page=20)
 					if 'next_url' in to_tweets:
-						reportRow["to"] = self.ABOVE_MAX
+						reportRow['to'] = self.ABOVE_MAX
 					else:
-						reportRow["to"] = len(to_tweets['results'])
-					reportRow["to_query"] = to_tweets['query']
+						reportRow['to'] = len(to_tweets['results'])
+					reportRow['to_query'] = to_tweets['query']
 
 					ref_tweets = self.searchApi.Search(referencing_username=user.GetScreenName(), from_username=follower.GetScreenName(), per_page=20)
 					if 'next_url' in ref_tweets:
-						reportRow["mentioned"] = self.ABOVE_MAX
+						reportRow['mentioned'] = self.ABOVE_MAX
 					else:
-						reportRow["mentioned"] = len(ref_tweets['results'])
-					reportRow["mentioned_query"] = ref_tweets['query']
+						reportRow['mentioned'] = len(ref_tweets['results'])
+					reportRow['mentioned_query'] = ref_tweets['query']
 
-				if reportRow.get("to") > 0 or reportRow.get("mentioned") > 0:
+				if reportRow.get('to') > 0 or reportRow.get('mentioned') > 0:
 					report[follower.GetScreenName()] = reportRow
 		return report
 
