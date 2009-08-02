@@ -1,0 +1,7 @@
+import os, sys
+sys.path.append('/path/to/OnDeafTweers')
+os.environ['PYTHON_EGG_CACHE'] = '/path/to/OnDeafTweers/egg-cache'
+
+from paste.deploy import loadapp
+
+application = loadapp('config:/path/to/OnDeafTweers/development.ini')
