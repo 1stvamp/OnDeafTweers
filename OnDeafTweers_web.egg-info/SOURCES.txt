@@ -31,7 +31,8 @@ OnDeafTweers_web/model/meta.py
 OnDeafTweers_web/public/index.html
 OnDeafTweers_web/public/pylons-logo.gif
 OnDeafTweers_web/templates/tweets/new_user.mako
-OnDeafTweers_web/templates/tweets/report_user.mako
+OnDeafTweers_web/templates/tweets/new_user_error.mako
+OnDeafTweers_web/templates/tweets/user_report.mako
 OnDeafTweers_web/tests/__init__.py
 OnDeafTweers_web/tests/test_models.py
 OnDeafTweers_web/tests/functional/__init__.py
