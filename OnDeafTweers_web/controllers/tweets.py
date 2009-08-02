@@ -26,11 +26,15 @@ class TweetsController(BaseController):
 		except HTTPError, e:
 			c.id = id
 			c.exception = e
-			return render('/tweets/new_user_error.mako')
+			return render('/base.mako', extra_vars={'sub_template':'/tweets/new_user_error.mako'})
 		else:
 			session.save()
 
 		c.twitter_user = session['twitter_user']
 		c.report = self.odt.LookupFollowers(user=session['twitter_user'])
-		return render('/tweets/user_report.mako')
+		return render('/base.mako', extra_vars={'sub_template':'/tweets/user_report.mako'})
+
+	def test(self):
+		c.report = {}
+		return render('/base.mako', extra_vars={'sub_template':'/tweets/user_report.mako'})
 
