@@ -4,4 +4,6 @@ dist/*
 data/sessions/*
 data/templates/tweets/*
 development.ini
+live.ini
+odt.wsgi
 Paste*
