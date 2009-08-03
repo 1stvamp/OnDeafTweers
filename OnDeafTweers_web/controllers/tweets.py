@@ -21,20 +21,33 @@ class TweetsController(BaseController):
 		self.odt = OnDeafTweers(self.tw)
 
 	def user(self, id):
-		try:
-			session['twitter_user'] = self.tw.GetUser(id)
-		except HTTPError, e:
-			c.id = id
-			c.exception = e
-			return render('/base.mako', extra_vars={'sub_template':'/tweets/new_user_error.mako'})
+		if "twitter_users" not in session:
+			session["twitter_users"] = {}
+
+		if id not in session["twitter_users"]:
+			try:
+				user = self.tw.GetUser(id)
+			except HTTPError, e:
+				c.id = id
+				c.exception = e
+				return render('/base.mako', extra_vars={'sub_template':'/tweets/new_user_error.mako'})
+			else:
+				session["twitter_users"][id] = user
 		else:
-			session.save()
+			user = session["twitter_users"][id]
 
-		c.twitter_user = session['twitter_user']
-		c.report = self.odt.LookupFollowers(user=session['twitter_user'])
-		return render('/base.mako', extra_vars={'sub_template':'/tweets/user_report.mako'})
+		if "twitter_user_reports" not in session:
+			session["twitter_user_reports"] = {}
+		
+		if id not in session["twitter_user_reports"]:
+			report = self.odt.LookupFollowers(user=user)
+			session["twitter_user_reports"][id] = report
+		else:
+			report = session["twitter_user_reports"][id]
 
-	def test(self):
-		c.report = {}
+		session.save()
+
+		c.report = report
+		c.twitter_user = user
 		return render('/base.mako', extra_vars={'sub_template':'/tweets/user_report.mako'})
 
