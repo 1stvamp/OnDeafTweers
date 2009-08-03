@@ -30,7 +30,7 @@ class TweetsController(BaseController):
 			except HTTPError, e:
 				c.id = id
 				c.exception = e
-				return render('/base.mako', extra_vars={'sub_template':'/tweets/new_user_error.mako'})
+				return render('/tweets/new_user_error.mako')
 			else:
 				session["twitter_users"][id] = user
 		else:
@@ -49,5 +49,5 @@ class TweetsController(BaseController):
 
 		c.report = report
 		c.twitter_user = user
-		return render('/base.mako', extra_vars={'sub_template':'/tweets/user_report.mako'})
+		return render('/tweets/user_report.mako')
 
