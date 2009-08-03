@@ -23,6 +23,8 @@ static_files = true
 cache_dir = %(here)s/data
 beaker.session.key = OnDeafTweers_web
 beaker.session.secret = somesecret
+# Quarter-hour sessions
+beaker.session.timeout = 900
 
 # If you'd like to fine-tune the individual locations of the cache data dirs
 # for the Cache data, or the Session saves, un-comment the desired settings
