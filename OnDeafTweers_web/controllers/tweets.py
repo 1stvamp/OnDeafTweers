@@ -51,3 +51,5 @@ class TweetsController(BaseController):
 		c.twitter_user = user
 		return render('/tweets/user_report.mako')
 
+	def home(self):
+		return render('/home.mako');

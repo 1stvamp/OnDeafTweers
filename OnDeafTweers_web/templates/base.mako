@@ -4,7 +4,7 @@
 <head>
 	<title>On Deaf Tweers</title>
 	<meta http-equiv="Content-Type" content="text/html">
-	<link rel="stylesheet" media="screen" type="text/css" href="/style/boxes.css">
+	<link rel="stylesheet" media="screen" type="text/css" href="/styles/boxes.css">
 </head>
 <body>
 	${self.body()}

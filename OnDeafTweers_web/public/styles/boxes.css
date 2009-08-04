@@ -1,7 +1,7 @@
 /* Blue */
 /* set the image to use and establish the lower-right position */
 .bluebox, .bluebox_body, .bluebox_head, .bluebox_head h2 {
-	background:  transparent url("blue_box.png") no-repeat bottom right;
+	background:  transparent url("/images/blue_box.png") no-repeat bottom right;
 }
 .bluebox {
 	/* intended total box width - padding-right(next) */
