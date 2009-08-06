@@ -28,9 +28,12 @@ OnDeafTweers_web/lib/helpers.py
 OnDeafTweers_web/lib/twitter2.py
 OnDeafTweers_web/model/__init__.py
 OnDeafTweers_web/model/meta.py
-OnDeafTweers_web/public/index.html
 OnDeafTweers_web/public/pylons-logo.gif
-OnDeafTweers_web/templates/tweets/new_user.mako
+OnDeafTweers_web/public/images/blue_box.png
+OnDeafTweers_web/public/images/purple_box.png
+OnDeafTweers_web/public/styles/boxes.css
+OnDeafTweers_web/templates/base.mako
+OnDeafTweers_web/templates/home.mako
 OnDeafTweers_web/templates/tweets/new_user_error.mako
 OnDeafTweers_web/templates/tweets/user_report.mako
 OnDeafTweers_web/tests/__init__.py

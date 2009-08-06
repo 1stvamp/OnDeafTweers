@@ -9,6 +9,10 @@ Requirements
         easy_install python-twitter
     oauth
         easy_install oauth
+Optionally:
+If you'd like to speed things up by caching through memcached, you can install:
+    twisted
+        easy_install twisted
 
 Install ``OnDeafTweers_web`` using easy_install::
 
