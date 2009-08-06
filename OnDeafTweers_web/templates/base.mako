@@ -5,6 +5,7 @@
 	<title>On Deaf Tweers</title>
 	<meta http-equiv="Content-Type" content="text/html">
 	<link rel="stylesheet" media="screen" type="text/css" href="/styles/boxes.css">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
 </head>
 <body>
 	${self.body()}
