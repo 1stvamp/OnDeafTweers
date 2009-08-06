@@ -89,3 +89,9 @@ twitter.login.username =
 twitter.login.password = 
 twitter.oauth.consumer_key = 
 twitter.oauth.consumer_secret = 
+
+[memcache]
+memcache.server1.host = localhost
+memcache.server1.port = 11211
+#memcache.server2.host = localhost
+#memcache.server2.port = 11212
