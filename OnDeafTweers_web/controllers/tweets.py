@@ -6,6 +6,9 @@ from pylons.controllers.util import abort, redirect_to
 
 from OnDeafTweers_web.lib.base import BaseController, render
 
+from pylons.decorators import jsonify
+import simplejson
+
 import twitter2
 from OnDeafTweers import OnDeafTweers
 from urllib2 import URLError, HTTPError
@@ -28,15 +31,15 @@ class TweetsController(BaseController):
 			# TODO: init mc server list from config and pass it into Client()
 			self.mc = memcache.Client(['127.0.0.1:11211'], debug=0)
 
+	@jsonify
 	def user(self, id):
-		c.twitter_user = self.get_user(id)
 		try:
-			c.report = self.get_report(user)
+			report = self.get_report(self.get_user(id))
 		except HTTPError as e:
 			c.id = id
 			c.exception = e
 			return render('/tweets/new_user_error.mako')
-		return render('/tweets/user_report.mako')
+		return report
 
 	def home(self):
 		return render('/home.mako');
