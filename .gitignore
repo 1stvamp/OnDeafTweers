@@ -7,3 +7,4 @@ live.ini
 odt.wsgi
 Paste*
 egg-cache/*
+*.swp

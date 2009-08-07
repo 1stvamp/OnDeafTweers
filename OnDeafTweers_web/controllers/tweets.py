@@ -10,7 +10,7 @@ from pylons.decorators import jsonify
 import simplejson
 
 import twitter2
-from OnDeafTweers import OnDeafTweers
+from OnDeafTweersReport import OnDeafTweersReport
 from urllib2 import URLError, HTTPError
 
 log = logging.getLogger(__name__)
@@ -19,9 +19,6 @@ class TweetsController(BaseController):
 	def __before__(self):
 		# twitter2.Api instance for users
 		self.tw = twitter2.Api()
-		# Make sure we have a Tweetback instance
-		# also pass in the API instance for reuse
-		self.odt = OnDeafTweers(self.tw)
 		# Only use python-memcache if it's available
 		try:
 			import memcache
@@ -32,7 +29,7 @@ class TweetsController(BaseController):
 			self.mc = memcache.Client(['127.0.0.1:11211'], debug=0)
 
 	@jsonify
-	def user(self, id):
+	def generate_report(self, id):
 		try:
 			report = self.get_report(self.get_user(id))
 		except HTTPError as e:
@@ -92,10 +89,31 @@ class TweetsController(BaseController):
 				report = None
 		
 		if not report:
-			report = self.odt.LookupFollowers(user=user)
+			# Set the total number of followers in the session
+			# so we can show the current status via Ajax
+			session["follower_count"] = user.GetFollowersCount()
+			session.save()
+			report_generator = (row for row in OnDeafTweersReport(api=self.tw, user=user))
+			report = []
+			session["follower_current_num"] = 0;
+			for row in report_generator:
+				# Set the current follower number, to display
+				# the current status via Ajax
+				session["follower_current_num"] += 1
+				session.save()
+				report.append(row)
+
 			self.set_report(user.GetID(), report)
 		return report
-	
+
+	@jsonify
+	def get_follower_count(self):
+		return dict(count=session["follower_count"])
+
+	@jsonify
+	def get_follower_current_num(self):
+		return dict(num=session["follower_current_num"])
+
 	def set_report(self, id, report):
 		if self.mc:
 			# Use memcache

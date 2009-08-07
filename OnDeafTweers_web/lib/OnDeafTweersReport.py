@@ -3,7 +3,7 @@ import twitter2
 import re
 from urllib2 import URLError, HTTPError
 
-class OnDeafTweers(object):
+class OnDeafTweersReport(object):
 	"""OnDeafTweers
 	Class for comparing twitter followers and following
 	to see who you're not following who you have had conversations
@@ -11,7 +11,7 @@ class OnDeafTweers(object):
 	"""
 	"Constant for anything about the max freshhold"
 	ABOVE_MAX = "20+"
-	def __init__(self, api=None, searchApi=None):
+	def __init__(self, api=None, searchApi=None, user=None, username=None, user_id=None):
 		"Instantiate a OnDeafTweers object"
 		if not api:
 			# Twitter API wrapper not instantiated, so grab a new one
@@ -22,25 +22,29 @@ class OnDeafTweers(object):
 			self.searchApi = twitter2.SearchApi()
 		else:
 			self.searchApi = searchApi
-
-	def LookupFollowers(self, user=None, username=None, user_id=None):
-		# TODO: lookup followers, lookup friends
-		# search for @ replies by followers who aren't
-		# friends, return dict() report
 		if username:
-			user = self.api.GetUser(username)
+			self.user = self.api.GetUser(username)
 		elif user_id:
-			user = self.api.GetUser(user_id)
-
-		report = {}
-		at_username = "@%s" % user.GetScreenName()
-		at_username_regex = re.compile(r"$%s" % at_username)
+			self.user = self.api.GetUser(user_id)
+		else:
+			self.user = user
 		friendsIds = self.api.GetFriendsIds(user=user, username=username, user_id=user_id)
 		followersIds = self.api.GetFollowersIds(user=user, username=username, user_id=user_id)
 		# Get the difference between the 2, using sets
 		# This gives us all followers that aren't also friends
-		ids = set(followersIds).difference(set(friendsIds))
 		# Treat each as a User
+		self.ids = set(followersIds).difference(set(friendsIds))
+		self.at_username = "@%s" % self.user.GetScreenName()
+		self.at_username_regex = re.compile(r"$%s" % self.at_username)
+
+	def __iter__(self):
+		return self.LookupFollowers()
+
+	def LookupFollowers(self):
+		user = self.user
+		at_username = self.at_username
+		at_username_regex = self.at_username_regex
+
 		for id in ids:
 			reportRow = {}
 			try:
@@ -78,13 +82,12 @@ class OnDeafTweers(object):
 						reportRow['mentioned'] = len(ref_tweets['results'])
 					reportRow['mentioned_query'] = ref_tweets['query']
 
-				if reportRow.get('to') > 0 or reportRow.get('mentioned') > 0:
-					report[follower.GetScreenName()] = reportRow
-		return report
+				reportRow["screen_name"] = follower.GetScreenName()
+				yield reportRow
 
 def main():
 	# TODO: CLI
-	tb = OnDeafTweers()
+	#tbr = OnDeafTweersReport()
 	print "ODT loaded"
 	return
 
