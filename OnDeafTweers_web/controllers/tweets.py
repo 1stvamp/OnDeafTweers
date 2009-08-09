@@ -25,7 +25,7 @@ class TweetsController(BaseController):
 		for i in range(1, 100):
 			if "memcache.server%d.host" % i in config:
 				server = {"host": config["memcache.server%d.host" % i], "port": config["memcache.server%d.port" % i]}
-				self.mc_servers.append(config[server)
+				self.mc_servers.append(server)
 			else:
 				break
 
