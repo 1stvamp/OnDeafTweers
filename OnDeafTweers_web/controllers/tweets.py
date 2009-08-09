@@ -47,7 +47,7 @@ class TweetsController(BaseController):
 	def generate_report(self, id):
 		try:
 			report = self.get_report(self.get_user(id))
-		except HTTPError as e:
+		except HTTPError, e:
 			c.id = id
 			c.exception = e
 			return render('/tweets/new_user_error.mako')
