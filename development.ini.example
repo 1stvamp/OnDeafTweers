@@ -26,6 +26,16 @@ beaker.session.secret = somesecret
 # Quarter-hour sessions
 beaker.session.timeout = 900
 
+twitter.login.username = 
+twitter.login.password = 
+twitter.oauth.consumer_key = 
+twitter.oauth.consumer_secret = 
+
+memcache.server1.host = localhost
+memcache.server1.port = 11211
+#memcache.server2.host = localhost
+#memcache.server2.port = 11212
+
 # If you'd like to fine-tune the individual locations of the cache data dirs
 # for the Cache data, or the Session saves, un-comment the desired settings
 # here:
@@ -83,15 +93,3 @@ formatter = generic
 [formatter_generic]
 format = %(asctime)s,%(msecs)03d %(levelname)-5.5s [%(name)s] %(message)s
 datefmt = %H:%M:%S
-
-[twitter]
-twitter.login.username = 
-twitter.login.password = 
-twitter.oauth.consumer_key = 
-twitter.oauth.consumer_secret = 
-
-[memcache]
-memcache.server1.host = localhost
-memcache.server1.port = 11211
-#memcache.server2.host = localhost
-#memcache.server2.port = 11212

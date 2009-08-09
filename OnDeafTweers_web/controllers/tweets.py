@@ -10,12 +10,25 @@ from pylons.decorators import jsonify
 import simplejson
 
 import twitter2
-from OnDeafTweersReport import OnDeafTweersReport
+from OnDeafTweers import OnDeafTweersReport
 from urllib2 import URLError, HTTPError
+import re
 
 log = logging.getLogger(__name__)
 
 class TweetsController(BaseController):
+	def __call__(self, environ, start_response):
+		# Dict of the "[app:main]" section in config file
+		config = environ["paste.config"]["app_conf"]
+		#self.mc_server = cfg["my.config.key"]
+		self.mc_servers = []
+		for i in range(1, 100):
+			if "memcache.server%d.host" % i in config:
+				server = {"host": config["memcache.server%d.host" % i], "port": config["memcache.server%d.port" % i]}
+				self.mc_servers.append(config[server)
+			else:
+				break
+
 	def __before__(self):
 		# twitter2.Api instance for users
 		self.tw = twitter2.Api()
@@ -25,8 +38,10 @@ class TweetsController(BaseController):
 		except ImportError:
 			self.mc = None
 		else:
-			# TODO: init mc server list from config and pass it into Client()
-			self.mc = memcache.Client(['127.0.0.1:11211'], debug=0)
+			if len(self.mc_servers) > 0
+				self.mc = memcache.Client(self.mc_servers, debug=0)
+			else:
+				self.mc = None
 
 	@jsonify
 	def generate_report(self, id):
