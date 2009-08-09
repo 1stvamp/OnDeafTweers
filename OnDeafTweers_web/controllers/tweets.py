@@ -38,7 +38,7 @@ class TweetsController(BaseController):
 		except ImportError:
 			self.mc = None
 		else:
-			if len(self.mc_servers) > 0
+			if len(self.mc_servers) > 0:
 				self.mc = memcache.Client(self.mc_servers, debug=0)
 			else:
 				self.mc = None
