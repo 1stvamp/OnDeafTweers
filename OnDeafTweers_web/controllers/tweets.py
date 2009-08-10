@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import request, response, session, config, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 
 from OnDeafTweers_web.lib.base import BaseController, render
@@ -19,15 +19,14 @@ log = logging.getLogger(__name__)
 class TweetsController(BaseController):
 	def __call__(self, environ, start_response):
 		# Dict of the "[app:main]" section in config file
-		config = environ["paste.config"]["app_conf"]
-		#self.mc_server = cfg["my.config.key"]
 		self.mc_servers = []
 		for i in range(1, 100):
 			if "memcache.server%d.host" % i in config:
 				server = {"host": config["memcache.server%d.host" % i], "port": config["memcache.server%d.port" % i]}
-				self.mc_servers.append(server)
+				self.mc_servers.append("%(host)s:%(port)s" % server)
 			else:
 				break
+		return BaseController.__call__(self, environ, start_response)
 
 	def __before__(self):
 		# twitter2.Api instance for users
@@ -54,6 +53,7 @@ class TweetsController(BaseController):
 		return report
 
 	def home(self):
+		print self.mc_servers
 		return render('/home.mako');
 
 	def get_user(self, id):
