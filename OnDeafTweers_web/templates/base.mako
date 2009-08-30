@@ -8,6 +8,12 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
 </head>
 <body>
+	<div>
+		<form action="/tweets/report">
+			<input type="text" name="username" />
+			<input type="submit" name="go" value="Go" />
+		</form>
+	</div>
 	${self.body()}
 </body>
 </html>

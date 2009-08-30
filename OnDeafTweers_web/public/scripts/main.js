@@ -1,0 +1,4 @@
+$(function() {
+	$("form").submit(function() {
+	});
+});
