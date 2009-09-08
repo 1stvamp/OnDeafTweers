@@ -53,7 +53,7 @@ class TweetsController(BaseController):
 		return report
 
 	def home(self):
-		print self.mc_servers
+		#print self.mc_servers
 		return render('/home.mako');
 
 	def get_user(self, id):
