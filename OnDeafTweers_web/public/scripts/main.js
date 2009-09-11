@@ -8,7 +8,7 @@ $(function() {
 				report_element.empty();
 				report.each(function(i) {
 					li = document.createElement('li');
-				}
+				});
 				report_element.slideDown();
 			}
 		);
