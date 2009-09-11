@@ -1,4 +1,7 @@
 <%inherit file="base.mako"/>
+<div id="report"></div>
+
+<!--
 <div class="bluebox">
 <div class="bluebox_head">
 <h2>Hi!</h2>
@@ -9,3 +12,4 @@
 </p>
 </div>
 </div>
+-->

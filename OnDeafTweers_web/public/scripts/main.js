@@ -12,5 +12,6 @@ $(function() {
 				report_element.slideDown();
 			}
 		);
+		return false;
 	});
 });
