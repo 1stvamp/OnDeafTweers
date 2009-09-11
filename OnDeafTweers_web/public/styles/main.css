@@ -22,11 +22,11 @@ body {
 
 div form {
         background-image: url('../images/odt_logo.png');
-        background-position: top center;
+        background-position: top left;
         background-repeat: no-repeat;
-	margin-top: 305px;
+	padding-top: 80px;
         clear: both;
-	width: 30%;
+	width: 40%;
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;

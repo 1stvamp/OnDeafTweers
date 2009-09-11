@@ -15,6 +15,7 @@
 			<input type="text" name="username" />
 			<input type="submit" name="go" value="Go" />
 		</form>
+		<hr/>
 	</div>
 	${self.body()}
 </body>
