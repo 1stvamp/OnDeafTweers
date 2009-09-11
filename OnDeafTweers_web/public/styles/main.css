@@ -1,14 +1,16 @@
 body {
-        background-image: url('../images/odt_logo.png');
-        background-position: top right;
-        background-repeat: no-repeat;
         background-color: #FFFFFF;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
 }
 .get_source {
         height: 131px;
         width: 150px;
         float: left;
         top: 0px;
+	left: 0px;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
         background-image: url('../images/code_corner.png');
         background-position: top left;
         background-repeat: no-repeat;
@@ -19,5 +21,13 @@ body {
 }
 
 div form {
+        background-image: url('../images/odt_logo.png');
+        background-position: top center;
+        background-repeat: no-repeat;
+	margin-top: 305px;
         clear: both;
+	width: 30%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
 }
