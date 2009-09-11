@@ -1,0 +1,23 @@
+body {
+        background-image: url('../images/odt_logo.png');
+        background-position: top right;
+        background-repeat: no-repeat;
+        background-color: #FFFFFF;
+}
+.get_source {
+        height: 88px;
+        width: 100px;
+        float: left;
+        top: 0px;
+        background-image: url('../images/code_corner.png');
+        background-position: top left;
+        background-repeat: no-repeat;
+
+}
+.get_source span {
+        display: none;
+}
+
+div form {
+        clear: both;
+}
