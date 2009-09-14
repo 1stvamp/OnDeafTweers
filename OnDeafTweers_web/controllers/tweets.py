@@ -26,6 +26,9 @@ class TweetsController(BaseController):
 				self.mc_servers.append("%(host)s:%(port)s" % server)
 			else:
 				break
+                if mc_servers.len() > 0:
+                    # Get the memcache timeout setting, or default to an hour
+                    self.mc_timeout = config.get('memcache.timeout', 3600)
 		return BaseController.__call__(self, environ, start_response)
 
 	def __before__(self):
@@ -79,7 +82,7 @@ class TweetsController(BaseController):
 	def set_user(self, id, user):
 		if self.mc:
 			# Use memcache
-			self.mc.set("twitter_user_%s" % id, user)
+			self.mc.set("twitter_user_%s" % id, user, self.mc_timeout)
 		else:
 			# Use sessions
 			if "twitter_users" not in session:
@@ -132,7 +135,7 @@ class TweetsController(BaseController):
 	def set_report(self, id, report):
 		if self.mc:
 			# Use memcache
-			self.mc.set("twitter_user_report_for_%s" % id, report)
+			self.mc.set("twitter_user_report_for_%s" % id, report, self.mc_timeout)
 		else:
 			# Use sessions
 			if "twitter_user_reports" not in session:
