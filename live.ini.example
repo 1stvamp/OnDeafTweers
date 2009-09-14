@@ -31,6 +31,7 @@ twitter.login.password =
 twitter.oauth.consumer_key = 
 twitter.oauth.consumer_secret = 
 
+memcache.timeout = 3600
 memcache.server1.host = localhost
 memcache.server1.port = 11211
 #memcache.server2.host = localhost
