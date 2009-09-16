@@ -26,7 +26,7 @@ class TweetsController(BaseController):
 				self.mc_servers.append("%(host)s:%(port)s" % server)
 			else:
 				break
-                if mc_servers.len() > 0:
+                if self.mc_servers.len() > 0:
                     # Get the memcache timeout setting, or default to an hour
                     self.mc_timeout = config.get('memcache.timeout', 3600)
 		return BaseController.__call__(self, environ, start_response)
