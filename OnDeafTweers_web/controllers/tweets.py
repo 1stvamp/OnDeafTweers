@@ -26,9 +26,11 @@ class TweetsController(BaseController):
 				self.mc_servers.append("%(host)s:%(port)s" % server)
 			else:
 				break
-                if len(self.mc_servers) > 0:
-                    # Get the memcache timeout setting, or default to an hour
-                    self.mc_timeout = config.get('memcache.timeout', 3600)
+		if len(self.mc_servers) > 0:
+			# Get the memcache timeout setting, or default to an hour
+			self.mc_timeout = int(config.get('memcache.timeout', 3600))
+		else:
+			self.mc_timeout = 3600
 		return BaseController.__call__(self, environ, start_response)
 
 	def __before__(self):
@@ -63,7 +65,7 @@ class TweetsController(BaseController):
 		user = None
 		if self.mc:
 			# Use memcache
-			user = self.mc.get("twitter_user_%s" % id)
+			user = self.mc.get("twitter_user_%s" % str(id))
 		else:
 			# Use sessions
 			if "twitter_users" not in session:
@@ -82,7 +84,7 @@ class TweetsController(BaseController):
 	def set_user(self, id, user):
 		if self.mc:
 			# Use memcache
-			self.mc.set("twitter_user_%s" % id, user, self.mc_timeout)
+			self.mc.set("twitter_user_%s" % str(id), user, self.mc_timeout)
 		else:
 			# Use sessions
 			if "twitter_users" not in session:
@@ -93,9 +95,10 @@ class TweetsController(BaseController):
 
 	def get_report(self, user):
 		report = None
+		id = user.GetId()
 		if self.mc:
 			# Use memcache
-			report = self.mc.get("twitter_user_report_for_%s" % id)
+			report = self.mc.get("twitter_user_report_for_%s" % str(id))
 		else:
 			# Use sessions
 			if "twitter_user_reports" not in session:
@@ -121,7 +124,7 @@ class TweetsController(BaseController):
 				session.save()
 				report.append(row)
 
-			self.set_report(user.GetID(), report)
+			self.set_report(user.GetId(), report)
 		return report
 
 	@jsonify
@@ -135,7 +138,7 @@ class TweetsController(BaseController):
 	def set_report(self, id, report):
 		if self.mc:
 			# Use memcache
-			self.mc.set("twitter_user_report_for_%s" % id, report, self.mc_timeout)
+			self.mc.set("twitter_user_report_for_%s" % str(id), report, self.mc_timeout)
 		else:
 			# Use sessions
 			if "twitter_user_reports" not in session:

@@ -45,7 +45,7 @@ class OnDeafTweersReport(object):
 		at_username = self.at_username
 		at_username_regex = self.at_username_regex
 
-		for id in ids:
+		for id in self.ids:
 			reportRow = {}
 			try:
 				follower = self.api.GetUser(id)
