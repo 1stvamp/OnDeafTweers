@@ -13,7 +13,7 @@
 	<a href="http://github.com/1stvamp/OnDeafTweers/" title="Get the source code to OnDeafTweers" class="get_source"><span>Get the source</span></a>
 	<div>
 		<form action="/tweets/report">
-			<input type="text" name="username" />
+			<input type="text" name="username" id="username" />
 			<input type="submit" name="go" value="Go" />
 		</form>
 		<hr/>

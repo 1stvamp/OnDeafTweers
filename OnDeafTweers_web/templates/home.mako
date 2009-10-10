@@ -1,5 +1,5 @@
 <%inherit file="base.mako"/>
-<div id="report"></div>
+<ul id="report"></ul>
 
 <!--
 <div class="bluebox">
